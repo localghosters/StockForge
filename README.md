@@ -1,1 +1,1 @@
-# StockForge
+# StockForge 📈
