@@ -1,0 +1,48 @@
+name: SS_RUN
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  secretshield:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install SecretShield
+        run: |
+          python -m pip install secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install secretshield
+
+      - name: Install all SecretShield versions 
+        run: | 
+          versions=$(python -c "import json, urllib.request; data=json.load(urllib.request.urlopen('https://pypi.org/pypi/secretshield/json')); print(' '.join(data['releases'].keys()))") 
+          for version in $versions; do 
+            echo "Installing SecretShield $version" 
+            python -m pip install --force-reinstall "secretshield==$version" 
+            done 
+
+    
+      - name: Reinstall latest SecretShield
+        run: | 
+          python -m pip install --upgrade --force-reinstall secretshield 
+          secretshield --version
+
+      - name: Scan repository
+        run: secretshield scan .
