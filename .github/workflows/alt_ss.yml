@@ -67,7 +67,7 @@ jobs:
           python -m pip uninstall -y secretshield
           python -m pip install secretshield==0.1.0
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield0.4.1
+          python -m pip install secretshield==0.4.1
           python -m pip uninstall -y secretshield
           python -m pip install secretshield==0.2.1
           python -m pip uninstall -y secretshield
