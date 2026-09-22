@@ -1,4 +1,4 @@
-# StockForge 📈                 [![SecretShield](https://github.com/localghosters/StockForge/actions/workflows/secretshield.yml/badge.svg)](https://github.com/localghosters/StockForge/actions/workflows/secretshield.yml)
+# StockForge 📈  &nbsp;&nbsp; [![SecretShield](https://github.com/localghosters/StockForge/actions/workflows/secretshield.yml/badge.svg)](https://github.com/localghosters/StockForge/actions/workflows/secretshield.yml)
 
 
 
