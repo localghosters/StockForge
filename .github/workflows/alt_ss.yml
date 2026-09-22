@@ -20,66 +20,66 @@ jobs:
 
       - name: Get SecretShield And Run Smoke Test
         run: |
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield
-          python -m pip uninstall -y secretshield
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.1.0
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.1.1
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.2.0
+          python -m pip install --no-cache-dir secretshield==0.1.0
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.5.0
+          python -m pip install --no-cache-dir secretshield==0.1.1
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.6.0
-          python -m pip uninstall -y secretshield
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.6.1
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.4.0
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.3.2
+          python -m pip install --no-cache-dir secretshield
           python -m pip uninstall -y secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.4.2
+          python -m pip install --no-cache-dir secretshield==0.2.0
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.5.2
+          python -m pip install --no-cache-dir secretshield==0.5.0
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.1.0
-          python -m pip uninstall -y secretshield
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.1.0
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.4.1
-          python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.2.1
+          python -m pip install --no-cache-dir secretshield==0.6.0
           python -m pip uninstall -y secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.2.0
+          python -m pip install --no-cache-dir secretshield==0.6.1
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.1.0
+          python -m pip install --no-cache-dir secretshield==0.4.0
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.5.2
+          python -m pip install --no-cache-dir secretshield==0.3.2
           python -m pip uninstall -y secretshield
           python -m pip uninstall -y secretshield
-          python -m pip install secretshield==0.6.1
+          python -m pip install --no-cache-dir secretshield==0.4.2
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.5.2
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.1.0
+          python -m pip uninstall -y secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.1.0
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.4.1
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.2.1
+          python -m pip uninstall -y secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.2.0
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.1.0
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.5.2
+          python -m pip uninstall -y secretshield
+          python -m pip uninstall -y secretshield
+          python -m pip install --no-cache-dir secretshield==0.6.1
           secretshield scan . 
           secretshield --version
           secretshield --version
