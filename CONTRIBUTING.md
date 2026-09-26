@@ -77,3 +77,4 @@ Simple, understandable implementations are preferred over unnecessary complexity
 Be respectful, constructive, and open to different approaches. Criticism of code and strategies is welcome; personal attacks are not.
 
 Thanks for helping build StockForge!
+
