@@ -1,4 +1,4 @@
-# Contributing to StockForge
+# Contributing to StockForge 📈
 
 Thanks for your interest in contributing to StockForge!
 
