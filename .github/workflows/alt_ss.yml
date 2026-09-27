@@ -1,4 +1,4 @@
-name: SS_RUN
+name: alt_ss
 
 on:
   push:
