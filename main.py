@@ -1,2 +1,2 @@
-import yfinance 
+import yfinance, secretshield, random
 # jayawant u on from here cuz i cant rlly do this u know....
