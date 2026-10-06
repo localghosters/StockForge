@@ -72,3 +72,194 @@ data["MA50"] = data["Close"].rolling(
     window=long_window
 ).mean()
 
+# ==========================================
+# 6. GENERATE BUY / SELL SIGNALS
+# ==========================================
+
+data["Signal"] = 0
+
+data.loc[
+    data["MA20"] > data["MA50"],
+    "Signal"
+] = 1
+
+data.loc[
+    data["MA20"] < data["MA50"],
+    "Signal"
+] = -1
+
+
+# ==========================================
+# 7. CALCULATE STRATEGY RETURNS
+# ==========================================
+
+data["Strategy Return"] = (
+    data["Return"] * data["Signal"].shift(1)
+)
+
+
+# ==========================================
+# 8. CALCULATE CUMULATIVE RETURNS
+# ==========================================
+
+data["Market Growth"] = (
+    1 + data["Return"]
+).cumprod()
+
+data["Strategy Growth"] = (
+    1 + data["Strategy Return"]
+).cumprod()
+
+
+# ==========================================
+# 9. BASIC PERFORMANCE STATISTICS
+# ==========================================
+
+market_return = (
+    data["Market Growth"].iloc[-1] - 1
+) * 100
+
+strategy_return = (
+    data["Strategy Growth"].iloc[-1] - 1
+) * 100
+
+
+print("==========================================")
+print("STOCKFORGE RESULTS")
+print("==========================================")
+
+print(f"Ticker: {ticker}")
+print(f"Period: {start_date} to {end_date}")
+print()
+
+print(f"Buy & Hold Return: {market_return:.2f}%")
+print(f"Strategy Return:   {strategy_return:.2f}%")
+print()
+
+
+# ==========================================
+# 10. FIND BUY / SELL SIGNAL CHANGES
+# ==========================================
+
+data["Signal Change"] = data["Signal"].diff()
+
+buy_signals = data[data["Signal Change"] == 2]
+sell_signals = data[data["Signal Change"] == -2]
+
+
+print(f"Buy signals:  {len(buy_signals)}")
+print(f"Sell signals: {len(sell_signals)}")
+print()
+
+
+# ==========================================
+# 11. CALCULATE MAX DRAWDOWN
+# ==========================================
+
+peak = data["Strategy Growth"].cummax()
+
+drawdown = (
+    data["Strategy Growth"] - peak
+) / peak
+
+max_drawdown = drawdown.min() * 100
+
+print(f"Maximum Drawdown: {max_drawdown:.2f}%")
+print()
+
+
+# ==========================================
+# 12. PLOT STOCK PRICE + MOVING AVERAGES
+# ==========================================
+
+plt.figure(figsize=(14, 7))
+
+plt.plot(
+    data.index,
+    data["Close"],
+    label="AAPL Price"
+)
+
+plt.plot(
+    data.index,
+    data["MA20"],
+    label="20-Day MA"
+)
+
+plt.plot(
+    data.index,
+    data["MA50"],
+    label="50-Day MA"
+)
+
+plt.scatter(
+    buy_signals.index,
+    buy_signals["Close"],
+    marker="^",
+    s=80,
+    label="Buy"
+)
+
+plt.scatter(
+    sell_signals.index,
+    sell_signals["Close"],
+    marker="v",
+    s=80,
+    label="Sell"
+)
+
+plt.title(f"{ticker} StockForge Moving Average Strategy")
+plt.xlabel("Date")
+plt.ylabel("Price")
+plt.legend()
+plt.grid()
+
+plt.show()
+
+
+# ==========================================
+# 13. PLOT STRATEGY PERFORMANCE
+# ==========================================
+
+plt.figure(figsize=(14, 7))
+
+plt.plot(
+    data.index,
+    data["Market Growth"],
+    label="Buy & Hold"
+)
+
+plt.plot(
+    data.index,
+    data["Strategy Growth"],
+    label="StockForge Strategy"
+)
+
+plt.title(f"{ticker} Strategy Performance")
+plt.xlabel("Date")
+plt.ylabel("Growth")
+plt.legend()
+plt.grid()
+
+plt.show()
+
+
+# ==========================================
+# 14. FINAL DATA PREVIEW
+# ==========================================
+
+print("Final 10 rows:")
+print(
+    data[
+        [
+            "Close",
+            "Return",
+            "MA20",
+            "MA50",
+            "Signal",
+            "Strategy Return",
+            "Market Growth",
+            "Strategy Growth"
+        ]
+    ].tail(10)
+)
