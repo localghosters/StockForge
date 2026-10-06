@@ -1,1 +1,36 @@
+name: ss_weekly_scan
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Every Sunday at 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  secretshield:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install latest SecretShield
+        shell: bash
+        run: |
+          versions=$(python -c "import json, urllib.request; data=json.load(urllib.request.urlopen('https://pypi.org/pypi/secretshield/json')); print(' '.join(data['releases'].keys()))")
+
+          for version in $versions; do
+            echo "Installing SecretShield $version"
+            python -m pip install --no-cache-dir --force-reinstall "secretshield==$version"
+          done
+          python -m pip install --no-cache-dir --upgrade --force-reinstall secretshield
+          ss --version
+
+
+      - name: Scan repository
+        run: ss scan .
 
