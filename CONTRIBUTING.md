@@ -6,9 +6,9 @@ StockForge is an open-source quant finance project focused on experimenting with
 
 The project is built in Python and currently uses:
 
-* yfinance for market data
-* pandas for data handling and analysis
-* matplotlib for visualizations
+* [yfinance](https://github.com/ranaroussi/yfinance) for market data
+* [pandas](https://pandas.pydata.org/) for data handling and analysis
+* [matplotlib](https://matplotlib.org/) for visualizations
 
 StockForge is also a place to experiment, test ideas, find bugs, and learn from each other. You don't need to be a quant expert to contribute.
 
