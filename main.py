@@ -11,8 +11,8 @@ import random
 
 ticker = "AAPL"
 
-start_date = "2020-01-01"
-end_date = "2025-01-01"
+start_date = "2015-01-01"
+end_date = "2026-01-01"
 
 short_window = 20
 long_window = 50
@@ -175,8 +175,12 @@ print()
 # 12. RISK & PERFORMANCE ANALYSIS
 # ==========================================
 
-annualized_return = (
-    data["Strategy Return"].mean() * 252
+years = (
+    data.index[-1] - data.index[0]
+).days / 365.25
+
+cagr = (
+    data["Strategy Growth"].iloc[-1] ** (1 / years) - 1
 ) * 100
 
 annualized_volatility = (
@@ -213,8 +217,9 @@ print("RISK ANALYSIS")
 print("==========================================")
 
 print(
-    f"Annualized Return:      "
-    f"{annualized_return:.2f}%"
+    f"CAGR:                   "
+    f"{cagr:.2f}%"
+)
 )
 
 print(
