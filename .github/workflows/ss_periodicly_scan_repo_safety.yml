@@ -1,4 +1,4 @@
-name: ss_weekly_scan
+name: ss_weekly_scan 
 
 on:
   schedule:
