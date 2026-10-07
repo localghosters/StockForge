@@ -1,0 +1,65 @@
+//@version=6
+strategy("StockForge MA20/50 Strategy", overlay=true, initial_capital=10000, pyramiding=0)
+
+// ==========================================
+// 1. SETTINGS
+// ==========================================
+
+shortWindow = input.int(20, "Short MA")
+longWindow  = input.int(50, "Long MA")
+
+// ==========================================
+// 2. MOVING AVERAGES
+// ==========================================
+
+ma20 = ta.sma(close, shortWindow)
+ma50 = ta.sma(close, longWindow)
+
+// ==========================================
+// 3. SIGNALS
+// ==========================================
+
+longSignal = ma20 > ma50
+shortSignal = ma20 < ma50
+
+// ==========================================
+// 4. TRADING LOGIC
+// ==========================================
+
+if longSignal
+    strategy.entry("Long", strategy.long)
+
+if shortSignal
+    strategy.entry("Short", strategy.short)
+
+// ==========================================
+// 5. PLOT MOVING AVERAGES
+// ==========================================
+
+plot(ma20, title="20-Day MA")
+plot(ma50, title="50-Day MA")
+
+// ==========================================
+// 6. BUY / SELL SIGNALS
+// ==========================================
+
+buySignal = ma20 > ma50 and ma20[1] <= ma50[1]
+sellSignal = ma20 < ma50 and ma20[1] >= ma50[1]
+
+plotshape(
+     buySignal,
+     title="Buy",
+     style=shape.triangleup,
+     location=location.belowbar,
+     size=size.small,
+     text="BUY"
+)
+
+plotshape(
+     sellSignal,
+     title="Sell",
+     style=shape.triangledown,
+     location=location.abovebar,
+     size=size.small,
+     text="SELL"
+)
