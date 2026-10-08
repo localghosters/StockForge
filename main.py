@@ -11,8 +11,8 @@ import random
 
 ticker = "AAPL"
 
-start_date = "2020-01-01"
-end_date = "2025-01-01"
+start_date = "2015-01-01"
+end_date = "2026-01-01"
 
 short_window = 20
 long_window = 50
