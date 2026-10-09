@@ -4,6 +4,11 @@
 
 > **Note:** We're not trying to build a highly advanced quant trading algorithm right away. StockForge will start as a basic backtesting model, and we'll gradually scale it up over time.
 
+
+## View in action
+
+
+
 ## Dependencies
 
 StockForge uses the following open-source Python libraries:
