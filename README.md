@@ -19,8 +19,3 @@ StockForge uses the following open-source Python libraries:
 
 These projects are distributed under their respective licenses.
 
-
-
-
-
-Localghosters :)
