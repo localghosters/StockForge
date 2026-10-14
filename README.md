@@ -18,3 +18,9 @@ StockForge uses the following open-source Python libraries:
 - [matplotlib](https://github.com/matplotlib/matplotlib)
 
 These projects are distributed under their respective licenses.
+
+
+
+
+
+Localghosters :)
