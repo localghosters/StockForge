@@ -7,7 +7,7 @@
 
 ## View in action
 
-![TradingView](sdfg.png)
+![TradingView](images/sdfg.png)
 
 ## Dependencies
 
