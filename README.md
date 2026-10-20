@@ -9,6 +9,9 @@
 
 ![TradingView](images/SDGW.png)
 
+
+Go to images folder for full preview details
+
 ## Dependencies
 
 StockForge uses the following open-source Python libraries:
