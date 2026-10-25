@@ -10,7 +10,7 @@
 ![TradingView](images/SDGW.png)
 
 
-Go to images folder for full preview details
+> NOTICE: Go to images folder for full preview details
 
 ## Dependencies
 
