@@ -1,9 +1,11 @@
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Virtual environments
 venv/
+.venv/
 env/
 stockforge_env/
 
@@ -24,7 +26,5 @@ stockforge_env/
 # Logs
 *.log
 
-venv/
-env/
-stockforge_env/
-.venv/
+# Generated charts
+*_equity.png
