@@ -1,9 +1,8 @@
-"""
-# import yfinance as yf
-# import pandas as pd
+import yfinance as yf
+import pandas as pd
 import matplotlib.pyplot as plt
-# import secretshield
-# import random
+import secretshield
+import random
 
 
 # ==========================================
@@ -408,4 +407,3 @@ print(
         ]
     ].tail(10)
 )
-"""
