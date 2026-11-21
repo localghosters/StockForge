@@ -27,4 +27,4 @@ stockforge_env/
 *.log
 
 # Generated charts
-*.png
+*_equity.png
