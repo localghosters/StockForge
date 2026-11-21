@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+stockforge_env/
+
+# Environment variables and secrets
+.env
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
+venv/
+env/
+stockforge_env/
+.venv/
