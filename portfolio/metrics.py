@@ -29,4 +29,15 @@ def summary(df):
         "sharpe": sharpe_ratio(df["strategy_return"].fillna(0)),
         "max_drawdown": max_drawdown(df["equity"]),
         "buy_hold_return": total_return(df["buy_hold"]),
+        "buy_hold_drawdown": max_drawdown(df["buy_hold"]),
     }
+
+
+def regime_breakdown(df):
+    tmp = df.assign(prev_regime=df["regime"].shift(1))
+    tmp["strategy_return"] = tmp["strategy_return"].fillna(0)
+    return tmp.groupby("prev_regime")["strategy_return"].agg(
+        days="count",
+        avg_daily="mean",
+        total=lambda x: (1 + x).prod() - 1,
+    )
