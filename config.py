@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 DB_PATH = BASE_DIR / "database" / "stockforge.db"
 
-TICKERS = ["AAPL", "MSFT", "RELIANCE.NS"]
+TICKERS = ["AAPL", "MSFT", "RELIANCE.NS", "GOOGL", "JPM", "XOM", "INFY.NS", "HDFCBANK.NS"]
 START_DATE = "2018-01-01"
 END_DATE = None
 
@@ -12,3 +12,17 @@ LONG_WINDOW = 50
 
 INITIAL_CAPITAL = 100000
 FEE_RATE = 0.001
+
+EVAL_START = "2023-01-01"
+
+ADX_TREND = 25
+ADX_RANGE = 20
+VOL_CAP = 0.80
+
+SAVE_FILES = False
+
+ALLOW_SHORT = True
+SHORT_BORROW_RATE = 0.02
+
+SHOW_CHARTS = True
+DETAIL_TICKERS = ["AAPL"]

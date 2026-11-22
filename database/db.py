@@ -37,15 +37,19 @@ def save_prices(ticker, df):
         )
 
 
-def load_prices(ticker):
+def load_prices(ticker, start=None):
     query = """
         SELECT date, open, high, low, close, volume
         FROM prices
         WHERE ticker = ?
-        ORDER BY date
     """
+    params = [ticker]
+    if start:
+        query += " AND date >= ?"
+        params.append(start)
+    query += " ORDER BY date"
     with get_connection() as conn:
         return pd.read_sql_query(
-            query, conn, params=(ticker,),
+            query, conn, params=params,
             parse_dates=["date"], index_col="date",
         )
