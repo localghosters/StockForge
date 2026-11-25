@@ -6,3 +6,5 @@ scipy
 statsmodels
 sqlalchemy
 pytest
+streamlit
+plotly

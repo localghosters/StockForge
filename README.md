@@ -12,6 +12,18 @@
 
 > NOTICE: Go to images folder for full preview details
 
+## Web dashboard
+
+```bash
+pip install -r requirements.txt
+streamlit run dashboard.py
+```
+
+Interactive candlestick chart with buy/sell markers and regime shading, equity vs buy & hold,
+drawdown, per-ticker diagnostics, trade/action logs and CSV export. Tickers, fees, shorting,
+regime thresholds and strategy parameters are adjustable from the sidebar. It runs the same
+pipeline as `main.py` (`backtesting/pipeline.py`).
+
 ## Dependencies
 
 StockForge uses the following open-source Python libraries:
