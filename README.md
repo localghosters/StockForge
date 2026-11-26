@@ -20,7 +20,7 @@ streamlit run dashboard.py
 ```
 
 Interactive candlestick chart with buy/sell markers and regime shading, equity vs buy & hold,
-drawdown, per-ticker diagnostics, trade/action logs and CSV export. Tickers, fees, shorting,
+drawdown, per-ticker diagnostics, trade/action logs and CSV export, plus a parameter-sweep heatmap tab. Tickers, fees, shorting,
 regime thresholds and strategy parameters are adjustable from the sidebar. It runs the same
 pipeline as `main.py` (`backtesting/pipeline.py`).
 
@@ -33,6 +33,4 @@ StockForge uses the following open-source Python libraries:
 - [matplotlib](https://github.com/matplotlib/matplotlib)
 
 These projects are distributed under their respective licenses.
-
-> for full list check requirements.txt
 

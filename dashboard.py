@@ -11,7 +11,7 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 import config
-from backtesting.pipeline import run_pipeline
+from backtesting.pipeline import SWEEP_METRICS, SWEEP_PARAMS, run_pipeline, sweep_grid
 from data.fetch import download_prices
 from database.db import create_tables, save_prices, load_prices
 
@@ -161,7 +161,8 @@ if not out:
     st.info("Pick tickers in the sidebar and press **Run backtest**.")
     st.stop()
 
-tab_over, tab_detail, tab_trades = st.tabs(["Overview", "Ticker detail", "Trades & export"])
+tab_over, tab_detail, tab_trades, tab_sweep = st.tabs(
+    ["Overview", "Ticker detail", "Trades & export", "Parameter sweep"])
 
 with tab_over:
     st.subheader("Summary")
@@ -209,3 +210,57 @@ with tab_trades:
     d1, d2 = st.columns(2)
     d1.download_button("Download trades CSV", trades.to_csv(index=False), f"{t}_trades.csv", "text/csv")
     d2.download_button("Download daily CSV", o["result"].to_csv(), f"{t}_daily.csv", "text/csv")
+
+with tab_sweep:
+    st.caption("Runs one backtest per cell using the sidebar settings for everything not swept. "
+               "Sweeping on the scored period and picking the best cell is overfitting: tune on "
+               "earlier data (move 'Scored from' back), then check on later data.")
+    t = st.selectbox("Ticker  ", list(out), key="sweep_ticker")
+    names = list(SWEEP_PARAMS)
+    c1, c2, c3 = st.columns(3)
+    x_name = c1.selectbox("X axis", names, index=0)
+    y_name = c2.selectbox("Y axis", names, index=names.index("ADX trend threshold"))
+    metric = c3.selectbox("Metric", list(SWEEP_METRICS))
+
+    def axis_inputs(label, default):
+        lo, hi, step = default
+        a, b, c = st.columns(3)
+        return (a.number_input(f"{label} from", value=float(lo), key=f"{label}lo"),
+                b.number_input(f"{label} to", value=float(hi), key=f"{label}hi"),
+                c.number_input(f"{label} step", value=float(step), min_value=0.001, key=f"{label}st"))
+
+    xa = axis_inputs("X", (10, 60, 10))
+    ya = axis_inputs("Y", (15, 35, 5))
+
+    def values(lo, hi, step, name):
+        vals, v = [], lo
+        while v <= hi + 1e-9:
+            vals.append(v)
+            v += step
+        if name == "Volatility cap":
+            return [round(v, 3) for v in vals]
+        return [int(round(v)) for v in vals]
+
+    xs, ys = values(*xa, x_name), values(*ya, y_name)
+    st.write(f"{len(xs)} x {len(ys)} = {len(xs) * len(ys)} backtests")
+    if x_name == y_name:
+        st.warning("Pick two different parameters.")
+    elif len(xs) * len(ys) > 150:
+        st.warning("Grid too large (max 150 cells). Widen the step.")
+    elif st.button("Run sweep", type="primary"):
+        config.ADX_TREND, config.ADX_RANGE, config.VOL_CAP = adx_trend, adx_range, vol_cap
+        prices = load_ticker(t, config.START_DATE, config.END_DATE)
+        with st.spinner("Sweeping..."):
+            st.session_state["sweep"] = (t, metric, sweep_grid(
+                prices, eval_start, capital, fee, borrow, short,
+                x_name, xs, y_name, ys, metric, strategy_params))
+    if "sweep" in st.session_state:
+        st_t, st_metric, grid = st.session_state["sweep"]
+        fmt_z = ".0%" if st_metric != "Sharpe" else ".2f"
+        fig = go.Figure(go.Heatmap(
+            z=grid.values, x=[str(c) for c in grid.columns], y=[str(i) for i in grid.index],
+            colorscale="RdYlGn", zmid=0, texttemplate="%{z:" + fmt_z + "}",
+            colorbar=dict(title=st_metric)))
+        fig.update_layout(height=450, title=f"{st_t}: {st_metric}",
+                          xaxis_title=grid.columns.name, yaxis_title=grid.index.name)
+        st.plotly_chart(fig, use_container_width=True)
