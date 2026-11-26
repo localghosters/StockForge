@@ -3,13 +3,7 @@ import pandas as pd
 import config
 from data.fetch import download_prices
 from database.db import create_tables, save_prices, load_prices
-from strategies.selector import build_signal
-from backtesting.engine import run_backtest
-from portfolio.metrics import summary
-from portfolio.diagnostics import (
-    trade_log, action_log, trade_stats, regime_table,
-    strategy_contribution, yearly_table,
-)
+from backtesting.pipeline import run_pipeline
 from visualisation.plots import plot_overview, plot_detail
 
 RESULTS_DIR = config.BASE_DIR / "results"
@@ -43,23 +37,20 @@ def main():
         save_prices(ticker, raw)
 
         prices = load_prices(ticker)
-        signals = build_signal(prices, allow_short=config.ALLOW_SHORT)
-        signals = signals.loc[config.EVAL_START:]
-        result = run_backtest(signals, config.INITIAL_CAPITAL, config.FEE_RATE,
-                              config.SHORT_BORROW_RATE)
-        trades = trade_log(result)
-        actions = action_log(result)
+        out = run_pipeline(prices, config.EVAL_START, config.INITIAL_CAPITAL,
+                           config.FEE_RATE, config.SHORT_BORROW_RATE, config.ALLOW_SHORT)
+        result, trades, actions = out["result"], out["trades"], out["actions"]
         results[ticker] = result
 
         print("\nRegime table (stock = what the stock did on those days)")
-        print(regime_table(result, config.FEE_RATE).round(4))
+        print(out["regimes"].round(4))
 
         print("\nReturn of each strategy before fees")
-        for name, value in strategy_contribution(result).items():
+        for name, value in out["contrib"].items():
             print(f"  {name}: {value:.2%}")
 
         print("\nTrade statistics")
-        print(pd.Series(trade_stats(trades, result, config.FEE_RATE)).round(3).to_string())
+        print(pd.Series(out["stats"]).round(3).to_string())
 
         print("\nResults by side (return is per trade)")
         if len(trades):
@@ -70,10 +61,10 @@ def main():
         print(actions.tail(8).to_string(index=False))
 
         print("\nYear by year")
-        print(yearly_table(result).round(3))
+        print(out["yearly"].round(3))
 
         print("\nSummary")
-        for name, value in summary(result).items():
+        for name, value in out["summary"].items():
             print(f"  {name}: {value:.2f}" if name == "sharpe" else f"  {name}: {value:.2%}")
 
         if config.SHOW_CHARTS and ticker in config.DETAIL_TICKERS:
