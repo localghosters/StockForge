@@ -37,13 +37,13 @@ def load_ticker(ticker, start, end):
 
 @st.cache_data(show_spinner=False)
 def run_one(ticker, eval_start, capital, fee, borrow, short,
-            adx_trend, adx_range, vol_cap, strategy_params):
+            adx_trend, adx_range, vol_cap, strategy_params, fill="close"):
     # regime.py reads config.X at call time, so these overrides take effect.
     config.ADX_TREND, config.ADX_RANGE, config.VOL_CAP = adx_trend, adx_range, vol_cap
     prices = load_ticker(ticker, config.START_DATE, config.END_DATE)
     if prices is None:
         return None
-    return run_pipeline(prices, eval_start, capital, fee, borrow, short, strategy_params)
+    return run_pipeline(prices, eval_start, capital, fee, borrow, short, strategy_params, fill)
 
 
 def fmt(key, value):
@@ -123,6 +123,8 @@ eval_start = st.sidebar.date_input("Scored from", pd.to_datetime(config.EVAL_STA
 capital = st.sidebar.number_input("Starting capital", 1000.0, value=float(config.INITIAL_CAPITAL), step=1000.0)
 fee = st.sidebar.number_input("Fee rate", 0.0, 0.05, float(config.FEE_RATE), step=0.0005, format="%.4f")
 short = st.sidebar.toggle("Allow shorting", bool(config.ALLOW_SHORT))
+fill_label = st.sidebar.selectbox("Fill model", ["Close (optimistic)", "Next open (realistic)"])
+fill = "next_open" if fill_label.startswith("Next") else "close"
 borrow = st.sidebar.number_input("Short borrow rate", 0.0, 1.0, float(config.SHORT_BORROW_RATE),
                                  step=0.005, format="%.3f", disabled=not short)
 
@@ -147,7 +149,7 @@ if run or "out" not in st.session_state:
         for t in tickers:
             try:
                 r = run_one(t, eval_start, capital, fee, borrow, short,
-                            adx_trend, adx_range, vol_cap, strategy_params)
+                            adx_trend, adx_range, vol_cap, strategy_params, fill)
                 if r is None:
                     st.warning(f"{t}: no data found, skipped.")
                 else:

@@ -16,10 +16,10 @@ from strategies.selector import build_signal
 
 
 def run_pipeline(prices, eval_start, capital, fee, borrow=0.0,
-                 allow_short=False, strategy_params=None):
+                 allow_short=False, strategy_params=None, fill="close"):
     signals = build_signal(prices, allow_short=allow_short, params=strategy_params)
     signals = signals.loc[eval_start:]
-    result = run_backtest(signals, capital, fee, borrow)
+    result = run_backtest(signals, capital, fee, borrow, fill)
     trades = trade_log(result)
     return {
         "result": result,
