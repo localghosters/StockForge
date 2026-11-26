@@ -39,3 +39,15 @@ def test_strategy_params_change_results():
     b = run_pipeline(prices, "2021-01-01", 1000, 0.001,
                      strategy_params={"trend_breakout": {"entry_window": 60}})["summary"]
     assert a != b
+
+
+def test_sweep_grid_shape_and_config_restored():
+    import config
+    from backtesting.pipeline import sweep_grid
+    before = config.ADX_TREND
+    grid = sweep_grid(synthetic_prices(), "2021-01-01", 1000, 0.001, 0.0, False,
+                      "Breakout entry window", [10, 20, 40],
+                      "ADX trend threshold", [20, 25], "Sharpe")
+    assert grid.shape == (2, 3)
+    assert grid.notna().all().all()
+    assert config.ADX_TREND == before
