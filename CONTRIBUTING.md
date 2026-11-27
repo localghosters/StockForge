@@ -65,7 +65,7 @@ streamlit run dashboard.py       # try the dashboard
 The tests use synthetic data and need no network. The code is organised as: `strategies/` (signals),
 `backtesting/` (engine and pipeline), `portfolio/` (metrics, diagnostics, robustness statistics),
 `research/` (study scripts), and `live/` (paper-trading signals). See the main `README.md` for details and
-[`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for how results should be evaluated.
+[`documentation/METHODOLOGY.md`](documentation/METHODOLOGY.md) for how results should be evaluated.
 
 ## Pull Requests
 
@@ -91,7 +91,7 @@ When adding a new strategy, try to include:
 
 Strategies should be tested on appropriate historical data and should avoid using information that would not have been available at the time of the simulated trade.
 
-To be considered, a new strategy should show (see [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)):
+To be considered, a new strategy should show (see [`documentation/METHODOLOGY.md`](documentation/METHODOLOGY.md)):
 
 * Results on a long history and several assets, not a single ticker or a short window
 * Realistic fills (`fill="next_open"`) and a cost-stress run (for example 30 bps)
