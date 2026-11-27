@@ -1,1 +1,23 @@
+## What changed and why
 
+<!-- A short description of the change and the reason for it. -->
+
+## Type
+
+- [ ] Bug fix
+- [ ] New strategy / indicator
+- [ ] Engine / metrics change
+- [ ] Dashboard / visualisation
+- [ ] Tests / docs / cleanup
+
+## Checklist
+
+- [ ] `python -m pytest -q` passes
+- [ ] Tests added or updated for new behaviour
+- [ ] No lookahead: nothing uses information unavailable at the simulated trade time
+- [ ] If this changes results (new strategy, engine or metric change): evidence from `python -m research.robustness` or a comparable study is included below
+- [ ] Docs updated if behaviour or settings changed (README, `docs/`, `CHANGELOG.md`)
+
+## Evidence / results (if applicable)
+
+<!-- Long history, multiple assets, costs stressed, baselines included. Single-ticker charts are not enough. -->
