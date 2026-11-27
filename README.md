@@ -26,6 +26,7 @@ paper-trading signal generator.
 - [What the research found so far](#what-the-research-found-so-far)
 - [Known limitations](#known-limitations)
 - [Dependencies](#dependencies)
+- [Documentation](#documentation)
 - [Testing and CI](#testing-and-ci)
 - [Contributing](#contributing)
 - [License](#license)
@@ -261,6 +262,18 @@ What this says:
 > `scipy`, `statsmodels` and `sqlalchemy` were previously listed in `requirements.txt` but are not imported anywhere in the codebase, so they have been removed.
 
 These projects are distributed under their respective licenses.
+
+---
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [docs/METHODOLOGY.md](docs/METHODOLOGY.md) | How to evaluate a strategy honestly, the luck tests, metrics glossary, and a log of what has been tried |
+| [docs/PAPER_TRADING.md](docs/PAPER_TRADING.md) | Using the daily signal script, what to track, and practical caveats |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Planned improvements |
+| [CHANGELOG.md](CHANGELOG.md) | What changed |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development setup and what new strategies need to show |
 
 ---
 
