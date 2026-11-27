@@ -14,7 +14,7 @@ All notable changes to StockForge are documented here, newest first. The format 
 - **Robustness tooling** (`portfolio/robustness.py`, `research/robustness.py`): ~20-year multi-asset comparison, cost stress, bootstrap Sharpe CI, random-timing luck test, paired Sharpe-difference test, diversified-portfolio tables.
 - **Live paper-trading signals** (`live/signals_today.py`), logging to `results/signals_log.csv`.
 - **Tests** (`tests/test_pipeline.py`, `tests/test_robustness.py`) and a GitHub Actions workflow that runs them.
-- **Documentation:** rewritten README, `docs/METHODOLOGY.md`, `docs/PAPER_TRADING.md`, `docs/ROADMAP.md`, PR template.
+- **Documentation:** rewritten README, `documentation/USAGE.md`, `documentation/METHODOLOGY.md`, `documentation/PAPER_TRADING.md`, `documentation/ROADMAP.md`, PR template.
 - `requirements-dev.txt` (adds pytest).
 
 ### Changed
@@ -26,4 +26,4 @@ All notable changes to StockForge are documented here, newest first. The format 
 - Unused dependencies `scipy`, `statsmodels` and `sqlalchemy` from `requirements.txt` (nothing imported them).
 
 ### Findings
-- The original regime-gated strategy showed no edge on honest tests, and shorting lost money in every test. A diversified trend-filter portfolio works as drawdown control. Details in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
+- The original regime-gated strategy showed no edge on honest tests, and shorting lost money in every test. A diversified trend-filter portfolio works as drawdown control. Details in [documentation/METHODOLOGY.md](documentation/METHODOLOGY.md).
