@@ -7,8 +7,10 @@ StockForge is an open-source quant finance project focused on experimenting with
 The project is built in Python and currently uses:
 
 * [yfinance](https://github.com/ranaroussi/yfinance) for market data
-* [pandas](https://pandas.pydata.org/) for data handling and analysis
-* [matplotlib](https://matplotlib.org/) for visualizations
+* [pandas](https://pandas.pydata.org/) and [numpy](https://numpy.org/) for data handling and analysis
+* [matplotlib](https://matplotlib.org/) for charts in the command-line tool
+* [Streamlit](https://streamlit.io/) and [Plotly](https://plotly.com/python/) for the web dashboard
+* [pytest](https://pytest.org/) for tests
 
 StockForge is also a place to experiment, test ideas, find bugs, and learn from each other. You don't need to be a quant expert to contribute.
 
@@ -48,7 +50,22 @@ Small fixes, bug fixes, documentation changes, and other straightforward improve
 7. Run any relevant tests.
 8. Open a pull request with a clear description of what you changed and why.
 
-For project setup and dependency installation, see the main `README.md`.
+## Development Setup
+
+```bash
+git clone <your fork>
+cd StockForge
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+python -m pytest -q              # run the tests
+streamlit run dashboard.py       # try the dashboard
+```
+
+The tests use synthetic data and need no network. The code is organised as: `strategies/` (signals),
+`backtesting/` (engine and pipeline), `portfolio/` (metrics, diagnostics, robustness statistics),
+`research/` (study scripts), and `live/` (paper-trading signals). See the main `README.md` for details and
+[`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for how results should be evaluated.
 
 ## Pull Requests
 
@@ -73,6 +90,15 @@ When adding a new strategy, try to include:
 * Relevant performance results or observations
 
 Strategies should be tested on appropriate historical data and should avoid using information that would not have been available at the time of the simulated trade.
+
+To be considered, a new strategy should show (see [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)):
+
+* Results on a long history and several assets, not a single ticker or a short window
+* Realistic fills (`fill="next_open"`) and a cost-stress run (for example 30 bps)
+* A comparison with buy & hold and with a simple baseline such as "close above the 200-day average"
+* The luck tests from `portfolio/robustness.py` (Sharpe confidence interval, random-timing test)
+* Parameters chosen before looking at results, or a tune/check split if they were fitted
+* Unit tests for the new logic, with no lookahead
 
 Historical backtest results are **not guarantees of future performance**.
 
