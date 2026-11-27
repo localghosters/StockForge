@@ -269,9 +269,9 @@ These projects are distributed under their respective licenses.
 
 | Document | What it covers |
 |---|---|
-| [docs/METHODOLOGY.md](docs/METHODOLOGY.md) | How to evaluate a strategy honestly, the luck tests, metrics glossary, and a log of what has been tried |
-| [docs/PAPER_TRADING.md](docs/PAPER_TRADING.md) | Using the daily signal script, what to track, and practical caveats |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Planned improvements |
+| [documentation/METHODOLOGY.md](documentation/METHODOLOGY.md) | How to evaluate a strategy honestly, the luck tests, metrics glossary, and a log of what has been tried |
+| [documentation/PAPER_TRADING.md](documentation/PAPER_TRADING.md) | Using the daily signal script, what to track, and practical caveats |
+| [documentation/ROADMAP.md](documentation/ROADMAP.md) | Planned improvements |
 | [CHANGELOG.md](CHANGELOG.md) | What changed |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Development setup and what new strategies need to show |
 
