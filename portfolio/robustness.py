@@ -48,3 +48,26 @@ def random_timing_test(result, fee_rate, n=1000, seed=0, min_shift=20):
         "median_random_sharpe": float(np.median(sharpes)),
         "p_value": float((np.sum(sharpes >= actual) + 1) / (n + 1)),
     }
+
+
+def sharpe_diff_ci(a, b, n_boot=2000, block=20, seed=0, level=0.95):
+    """Paired block bootstrap of Sharpe(a) - Sharpe(b) on the same dates.
+
+    Returns (point_difference, low, high). If the interval includes 0 the two
+    strategies' risk-adjusted returns are statistically indistinguishable.
+    """
+    both = np.column_stack([np.asarray(a, dtype=float), np.asarray(b, dtype=float)])
+    n = len(both)
+    if n < 2 * block:
+        return (np.nan, np.nan, np.nan)
+    rng = np.random.default_rng(seed)
+    nb = int(np.ceil(n / block))
+    starts = rng.integers(0, n, (n_boot, nb))
+    idx = ((starts[:, :, None] + np.arange(block)) % n).reshape(n_boot, -1)[:, :n]
+    s = both[idx]                                   # (n_boot, n, 2)
+    sd = s.std(axis=1)
+    sh = np.where(sd > 0, s.mean(axis=1) / np.where(sd > 0, sd, 1) * np.sqrt(252), 0.0)
+    diff = sh[:, 0] - sh[:, 1]
+    point = (both[:, 0].mean() / both[:, 0].std() - both[:, 1].mean() / both[:, 1].std()) * np.sqrt(252)
+    lo, hi = np.percentile(diff, [(1 - level) / 2 * 100, (1 + level) / 2 * 100])
+    return float(point), float(lo), float(hi)

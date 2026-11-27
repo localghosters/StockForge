@@ -14,7 +14,7 @@ import config
 from backtesting.engine import run_backtest
 from data.fetch import download_prices
 from portfolio.metrics import annual_return, max_drawdown, sharpe_ratio
-from portfolio.robustness import random_timing_test, sharpe_ci
+from portfolio.robustness import random_timing_test, sharpe_ci, sharpe_diff_ci
 from strategies import trend_filter
 from strategies.selector import build_signal
 
@@ -92,15 +92,16 @@ def main(tickers):
 
     print("\nDIVERSIFIED PORTFOLIOS: equal weight, daily rebalanced (next-open, 10bps)")
     groups = {"asset-class ETFs": [t for t in ASSET_ETFS if t in data], "all tickers": list(data)}
-    port = []
+    port, pieces = [], {}
     for vname in VARIANTS:
         for pname in PERIODS:
             for gname, members in groups.items():
                 cols = [streams[(vname, pname, t)] for t in members if (vname, pname, t) in streams]
                 if not cols:
                     continue
-                strat = pd.concat([c[0] for c in cols], axis=1).mean(axis=1).fillna(0)
-                bh = pd.concat([c[1] for c in cols], axis=1).mean(axis=1).fillna(0)
+                strat = pd.concat([c[0] for c in cols], axis=1, sort=True).mean(axis=1).fillna(0)
+                bh = pd.concat([c[1] for c in cols], axis=1, sort=True).mean(axis=1).fillna(0)
+                pieces.setdefault((vname, gname), []).append((strat, bh))
                 for label, r in (("strategy", strat), ("buy&hold", bh)):
                     eq = (1 + r).cumprod()
                     port.append({"variant": vname, "period": pname, "group": gname, "what": label,
@@ -108,18 +109,35 @@ def main(tickers):
                                  "sharpe": sharpe_ratio(r), "max_dd": max_drawdown(eq)})
     print(pd.DataFrame(port).round(3).to_string(index=False))
 
-    print("\nLUCK TESTS: gated long-only, next-open, 10bps, full history")
-    out = []
-    for t, prices in data.items():
-        res = run(prices, VARIANTS["gated long-only"], PERIODS["2006-2014"][0], None, 0.001, "next_open")
-        lo, hi = sharpe_ci(res["strategy_return"])
-        rt = random_timing_test(res, 0.001)
-        out.append({"ticker": t, "sharpe": rt["actual_sharpe"], "ci_low": lo, "ci_high": hi,
-                    "random_median": rt["median_random_sharpe"], "p_value": rt["p_value"]})
-    print(pd.DataFrame(out).round(3).to_string(index=False))
-    print("\nRead it like this: a CI that includes 0 means 'cannot tell from zero'. "
-          "A p_value above ~0.1 means the timing is not clearly better than shifting "
-          "the same positions to random dates.")
+    print("\nIS THE PORTFOLIO SHARPE GAP VS BUY & HOLD REAL OR NOISE? (full history, paired bootstrap)")
+    gap = []
+    for (vname, gname), parts in pieces.items():
+        strat = pd.concat([p[0] for p in parts]); bh = pd.concat([p[1] for p in parts])
+        point, lo, hi = sharpe_diff_ci(strat, bh)
+        slo, shi = sharpe_ci(strat)
+        gap.append({"variant": vname, "group": gname, "strat_sharpe": sharpe_ratio(strat),
+                    "sharpe_ci": f"[{slo:.2f}, {shi:.2f}]", "diff_vs_bh": point,
+                    "diff_ci": f"[{lo:.2f}, {hi:.2f}]"})
+    print(pd.DataFrame(gap).round(3).to_string(index=False))
+
+    print("\nLUCK TESTS PER TICKER (next-open, 10bps, full history), summarised per variant")
+    summ = []
+    for vname in ("gated long-only", "close > 200d SMA", "trend 50/100/200", "trend 50/100/200 + 10% vol"):
+        got = []
+        for t, prices in data.items():
+            res = run(prices, VARIANTS[vname], PERIODS["2006-2014"][0], None, 0.001, "next_open")
+            lo, hi = sharpe_ci(res["strategy_return"])
+            rt = random_timing_test(res, 0.001)
+            got.append((rt["actual_sharpe"], lo, rt["p_value"]))
+        g = pd.DataFrame(got, columns=["sharpe", "ci_low", "p"])
+        summ.append({"variant": vname, "tickers": len(g), "median_sharpe": g["sharpe"].median(),
+                     "ci_excludes_0": int((g["ci_low"] > 0).sum()),
+                     "timing_p<0.10": int((g["p"] < 0.10).sum()), "median_p": g["p"].median()})
+    print(pd.DataFrame(summ).round(3).to_string(index=False))
+    print("\nRead it like this: if the interval on diff_vs_bh includes 0, the strategy is not "
+          "provably better OR worse than buy & hold on risk-adjusted return; what it buys you "
+          "is the smaller drawdown. With ~14 tickers, a couple of 'significant' tickers by "
+          "chance alone is expected.")
 
 
 if __name__ == "__main__":

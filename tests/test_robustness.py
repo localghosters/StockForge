@@ -57,3 +57,13 @@ def test_trend_filter_fully_invested_in_steady_uptrend():
     idx = pd.bdate_range("2020-01-01", periods=400)
     df = pd.DataFrame({"close": np.linspace(100, 300, 400)}, index=idx)
     assert trend_filter.signal(df).iloc[-1] == 1.0
+
+
+def test_sharpe_diff_ci_detects_identical_and_different_series():
+    from portfolio.robustness import sharpe_diff_ci
+    rng = np.random.default_rng(5)
+    a = rng.normal(0.0004, 0.01, 1500)
+    point, lo, hi = sharpe_diff_ci(a, a)
+    assert abs(point) < 1e-9 and lo <= 0 <= hi
+    point2, lo2, hi2 = sharpe_diff_ci(a, rng.normal(-0.001, 0.01, 1500))
+    assert point2 > 0 and lo2 < point2 < hi2
