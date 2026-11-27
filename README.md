@@ -73,7 +73,7 @@ streamlit run dashboard.py               # web dashboard
 
 ## Usage
 
-Run every command from the repository root.
+Run every command from the repository root. For a full walkthrough of every feature, see [documentation/USAGE.md](documentation/USAGE.md).
 
 | What | Command | Notes |
 |---|---|---|
@@ -269,6 +269,7 @@ These projects are distributed under their respective licenses.
 
 | Document | What it covers |
 |---|---|
+| [documentation/USAGE.md](documentation/USAGE.md) | Step-by-step guide to using everything: CLI, dashboard, research scripts, live signals, Python library, recipes, troubleshooting |
 | [documentation/METHODOLOGY.md](documentation/METHODOLOGY.md) | How to evaluate a strategy honestly, the luck tests, metrics glossary, and a log of what has been tried |
 | [documentation/PAPER_TRADING.md](documentation/PAPER_TRADING.md) | Using the daily signal script, what to track, and practical caveats |
 | [documentation/ROADMAP.md](documentation/ROADMAP.md) | Planned improvements |
