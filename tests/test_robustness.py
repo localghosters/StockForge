@@ -41,3 +41,19 @@ def test_random_timing_on_random_signal_is_not_significant():
     res = run_backtest(df.fillna(0), 1000, 0.0005)
     out = random_timing_test(res, 0.0005, n=300)
     assert 0 <= out["p_value"] <= 1
+
+
+def test_trend_filter_is_long_only_and_vol_target_never_levers_up():
+    from strategies import trend_filter
+    df = _prices(1000)
+    plain = trend_filter.signal(df)
+    vt = trend_filter.signal(df, target_vol=0.05)
+    assert plain.between(0, 1).all() and vt.between(0, 1).all()
+    assert (vt <= plain + 1e-12).all()
+
+
+def test_trend_filter_fully_invested_in_steady_uptrend():
+    from strategies import trend_filter
+    idx = pd.bdate_range("2020-01-01", periods=400)
+    df = pd.DataFrame({"close": np.linspace(100, 300, 400)}, index=idx)
+    assert trend_filter.signal(df).iloc[-1] == 1.0

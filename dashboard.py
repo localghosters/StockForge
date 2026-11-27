@@ -11,6 +11,7 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 import config
+from strategies import trend_filter
 from backtesting.pipeline import SWEEP_METRICS, SWEEP_PARAMS, run_pipeline, sweep_grid
 from data.fetch import download_prices
 from database.db import create_tables, save_prices, load_prices
@@ -22,6 +23,11 @@ SELL_ACTIONS = {"SELL", "SHORT", "SELL and SHORT"}
 REGIME_COLORS = {"TREND": "rgba(46,160,67,0.10)", "RANGE": "rgba(56,139,253,0.10)",
                  "CRISIS": "rgba(248,81,73,0.15)"}
 PCT_KEYS_EXCLUDED = {"sharpe"}
+STRATEGY_CHOICES = {  # label -> (strategy modules or None for the original pair, params)
+    "Regime-gated (original)": (None, None),
+    "Trend filter 50/100/200": ([trend_filter], {}),
+    "Trend filter + 10% vol target": ([trend_filter], {"trend_filter": {"target_vol": 0.10}}),
+}
 
 
 # ---------------------------------------------------------------- data/run
@@ -37,13 +43,15 @@ def load_ticker(ticker, start, end):
 
 @st.cache_data(show_spinner=False)
 def run_one(ticker, eval_start, capital, fee, borrow, short,
-            adx_trend, adx_range, vol_cap, strategy_params, fill="close"):
+            adx_trend, adx_range, vol_cap, strategy_params, fill="close", strategy_name=None):
     # regime.py reads config.X at call time, so these overrides take effect.
     config.ADX_TREND, config.ADX_RANGE, config.VOL_CAP = adx_trend, adx_range, vol_cap
     prices = load_ticker(ticker, config.START_DATE, config.END_DATE)
     if prices is None:
         return None
-    return run_pipeline(prices, eval_start, capital, fee, borrow, short, strategy_params, fill)
+    modules, override = STRATEGY_CHOICES.get(strategy_name, (None, None))
+    params = strategy_params if override is None else override
+    return run_pipeline(prices, eval_start, capital, fee, borrow, short, params, fill, modules)
 
 
 def fmt(key, value):
@@ -123,6 +131,7 @@ eval_start = st.sidebar.date_input("Scored from", pd.to_datetime(config.EVAL_STA
 capital = st.sidebar.number_input("Starting capital", 1000.0, value=float(config.INITIAL_CAPITAL), step=1000.0)
 fee = st.sidebar.number_input("Fee rate", 0.0, 0.05, float(config.FEE_RATE), step=0.0005, format="%.4f")
 short = st.sidebar.toggle("Allow shorting", bool(config.ALLOW_SHORT))
+strategy_name = st.sidebar.selectbox("Strategy", list(STRATEGY_CHOICES))
 fill_label = st.sidebar.selectbox("Fill model", ["Close (optimistic)", "Next open (realistic)"])
 fill = "next_open" if fill_label.startswith("Next") else "close"
 borrow = st.sidebar.number_input("Short borrow rate", 0.0, 1.0, float(config.SHORT_BORROW_RATE),
@@ -149,7 +158,7 @@ if run or "out" not in st.session_state:
         for t in tickers:
             try:
                 r = run_one(t, eval_start, capital, fee, borrow, short,
-                            adx_trend, adx_range, vol_cap, strategy_params, fill)
+                            adx_trend, adx_range, vol_cap, strategy_params, fill, strategy_name)
                 if r is None:
                     st.warning(f"{t}: no data found, skipped.")
                 else:
