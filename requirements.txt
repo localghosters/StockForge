@@ -1,10 +1,8 @@
-yfinance
-pandas
-numpy
-matplotlib
-scipy
-statsmodels
-sqlalchemy
-pytest
-streamlit
-plotly
+# Runtime dependencies for StockForge (CLI, dashboard, research and live-signal scripts).
+# Developed and tested against Python 3.12, pandas 3.x, numpy 2.x, matplotlib 3.x.
+yfinance      # market data download
+pandas        # data handling and all backtest maths
+numpy         # numerics, bootstrap/luck tests
+matplotlib    # charts used by main.py (visualisation/plots.py)
+streamlit     # web dashboard (dashboard.py)
+plotly        # interactive charts in the dashboard
